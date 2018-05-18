@@ -20,7 +20,7 @@ def androidSupport = '24.1.1'
 //}
 
 ext {
-    bintrayRepo = 'maven'
+    bintrayRepo = 'cobrandersaquicard'
     bintrayName = artifactid
 
     publishedGroupId = publishedgroupid
@@ -54,12 +54,37 @@ android {
         versionCode 2
         versionName buildNumber
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+    dexOptions {
+        preDexLibraries true
+        maxProcessCount 8
+        javaMaxHeapSize "4g"
     }
 }
 
@@ -69,7 +94,7 @@ publishing {
             groupId groupid
             artifactId artifactid
             version "$buildNumber-SNAPSHOT"
-            artifact "$buildDir/outputs/aar/app-release.aar" //aar artifact you want to publish
+            artifact "$buildDir/outputs/aar/app-release.aar"
 
             //generate pom nodes for dependencies
             pom.withXml {
@@ -94,8 +119,8 @@ publishing {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+//    implementation 'com.android.support:multidex:1.0.1'
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    //noinspection GradleCompatible
     implementation "com.android.support:appcompat-v7:$androidSupport"
     implementation "com.novoda:bintray-release:$bintray"
     testImplementation 'junit:junit:4.12'
@@ -104,7 +129,5 @@ dependencies {
 }
 
 //Publish to jcenter
-apply from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/bintrayv1.gradle'
-
-//apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
+apply from: 'https://raw.githubusercontent.com/danielideriba/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/danielideriba/JCenter/master/bintrayv1.gradle'
